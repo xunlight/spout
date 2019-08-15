@@ -154,7 +154,7 @@ class Cell
     /**
      * @return bool
      */
-    public function isBoolean()
+    public function isFormula()
     {
         return $this->type === self::TYPE_FORMULA;
     }
@@ -162,7 +162,7 @@ class Cell
     /**
      * @return bool
      */
-    public function isFormula()
+    public function isBoolean()
     {
         return $this->type === self::TYPE_BOOLEAN;
     }
