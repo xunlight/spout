@@ -22,7 +22,6 @@ class Cell
 
     /**
      * Formula cell type
-     * Not used at the moment
      */
     const TYPE_FORMULA = 2;
 
@@ -131,6 +130,9 @@ class Cell
      */
     protected function detectType($value)
     {
+        if (CellTypeHelper::isFormula($value)) {
+            return self::TYPE_FORMULA;
+        }
         if (CellTypeHelper::isBoolean($value)) {
             return self::TYPE_BOOLEAN;
         }
@@ -146,7 +148,6 @@ class Cell
         if (CellTypeHelper::isNonEmptyString($value)) {
             return self::TYPE_STRING;
         }
-
         return self::TYPE_ERROR;
     }
 
@@ -154,6 +155,14 @@ class Cell
      * @return bool
      */
     public function isBoolean()
+    {
+        return $this->type === self::TYPE_FORMULA;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isFormula()
     {
         return $this->type === self::TYPE_BOOLEAN;
     }
