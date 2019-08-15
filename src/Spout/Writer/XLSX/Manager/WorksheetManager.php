@@ -38,6 +38,9 @@ class WorksheetManager implements WorksheetManagerInterface
 <worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
 EOD;
 
+    /** @var bool Whether we want autofilter on first line */
+    public $withAutoFilterOnFirstLine = true;
+    
     /** @var bool Whether inline or shared strings should be used */
     protected $shouldUseInlineStrings;
 
@@ -107,14 +110,21 @@ EOD;
      */
     public function startSheet(Worksheet $worksheet)
     {
+	$dimension  = '<dimension ref="A1:AA5"/>';
+	$sheetViews = '<sheetViews><sheetView tabSelected="1" workbookViewId="0" showGridLines="true" showRowColHeaders="1"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A2" sqref="A2"/></sheetView></sheetViews>';
+
         $sheetFilePointer = fopen($worksheet->getFilePath(), 'w');
         $this->throwIfSheetFilePointerIsNotAvailable($sheetFilePointer);
 
         $worksheet->setFilePointer($sheetFilePointer);
 
+        
         fwrite($sheetFilePointer, self::SHEET_XML_FILE_HEADER);
+	    if($this->withAutoFilterOnFirstLine)
+		    fwrite($sheetFilePointer, $dimension . $sheetViews);
         fwrite($sheetFilePointer, '<sheetData>');
     }
+
 
     /**
      * Checks if the sheet has been sucessfully created. Throws an exception if not.
@@ -218,6 +228,8 @@ EOD;
             $cellXML .= ' t="b"><v>' . (int) ($cell->getValue()) . '</v></c>';
         } elseif ($cell->isNumeric()) {
             $cellXML .= '><v>' . $cell->getValue() . '</v></c>';
+        } elseif ($cell->isFormula()) {
+            $cellXML .= '>' . $cell->getValue() . '</c>';
         } elseif ($cell->isEmpty()) {
             if ($this->styleManager->shouldApplyStyleOnEmptyCell($styleId)) {
                 $cellXML .= '/>';
@@ -261,6 +273,8 @@ EOD;
      */
     public function close(Worksheet $worksheet)
     {
+	$autofilter = '<autoFilter ref="$A$1:$AC$2391"/>';
+
         $worksheetFilePointer = $worksheet->getFilePointer();
 
         if (!is_resource($worksheetFilePointer)) {
@@ -268,7 +282,10 @@ EOD;
         }
 
         fwrite($worksheetFilePointer, '</sheetData>');
+	if($this->withAutoFilterOnFirstLine)
+	        fwrite($worksheetFilePointer, $autofilter);
         fwrite($worksheetFilePointer, '</worksheet>');
         fclose($worksheetFilePointer);
     }
+
 }
