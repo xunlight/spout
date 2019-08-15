@@ -273,8 +273,11 @@ EOD;
      */
     public function close(Worksheet $worksheet)
     {
-	$autofilter = '<autoFilter ref="$A$1:$AC$2391"/>';
-
+        $maxNumColumns = $worksheet->getMaxNumColumns();
+        $columnIndex   = CellHelper::getCellIndexFromColumnIndex($maxNumColumns);
+        $lastRowIndex  = $worksheet->getLastWrittenRowIndex();
+	    $autofilter    = "<autoFilter ref=\"$A$1:${$columnIndex}${$lastRowIndex}\"/>";
+        
         $worksheetFilePointer = $worksheet->getFilePointer();
 
         if (!is_resource($worksheetFilePointer)) {
@@ -282,7 +285,7 @@ EOD;
         }
 
         fwrite($worksheetFilePointer, '</sheetData>');
-	if($this->withAutoFilterOnFirstLine)
+	    if($this->withAutoFilterOnFirstLine)
 	        fwrite($worksheetFilePointer, $autofilter);
         fwrite($worksheetFilePointer, '</worksheet>');
         fclose($worksheetFilePointer);
