@@ -51,7 +51,26 @@ class CellTypeHelper
     {
         return gettype($value) === 'boolean';
     }
-
+    
+    /**
+     * Returns whether the cell value is formula.
+     *
+     * @param $value
+     * @return bool Whether the given value is formula
+     */
+    public static function isFormula($value)
+    {
+        $beginFNTag = '<f>';
+        $endFNTag   = '</f>';
+        $lengthBegin = strlen($beginFNTag);
+        $lengthEnd   = strlen($endFNTag);
+        
+        return (gettype($value) === 'string' 
+                && (substr($value, 0, $lengthBegin) === $beginFNTag) 
+                && (substr($value, -$lengthEnd) === $endFNTag)
+               );
+    }
+    
     /**
      * Returns whether the given value is a DateTime or DateInterval object.
      *
