@@ -64,6 +64,15 @@ class Sheet implements SheetInterface
     {
         return $this->name;
     }
+    
+    /**
+     * Sets Sheet name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
 
     /**
      * @return bool Whether the sheet was defined as active
