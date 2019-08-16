@@ -1,3 +1,11 @@
+Forked from https://github.com/box/spout
+### Added in XLSX
++ Formalas: 
+when addidng cells with formulas just place it into <f></f> as excel in xlsx does anyway. Example: '<f>SUBTOTAL(9,B1:B10)</f>'
++ First line is automatically freezed and added autofilter on it
+
+Original Readme from Box\Spout
+
 # Spout
 
 [![Latest Stable Version](https://poser.pugx.org/box/spout/v/stable)](https://packagist.org/packages/box/spout)
