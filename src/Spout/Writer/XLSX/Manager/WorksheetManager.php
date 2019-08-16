@@ -276,7 +276,7 @@ EOD;
         $maxNumColumns = $worksheet->getMaxNumColumns();
         $columnIndex   = CellHelper::getCellIndexFromColumnIndex($maxNumColumns);
         $lastRowIndex  = $worksheet->getLastWrittenRowIndex();
-	    $autofilter    = "<autoFilter ref=\"$A$1:${$columnIndex}${$lastRowIndex}\"/>";
+	    $autofilter    = "<autoFilter ref=\"\$A\$1:\${$columnIndex}\${$lastRowIndex}\"/>";
         
         $worksheetFilePointer = $worksheet->getFilePointer();
 
