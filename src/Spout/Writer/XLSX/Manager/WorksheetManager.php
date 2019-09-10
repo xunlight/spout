@@ -22,6 +22,8 @@ use Box\Spout\Writer\XLSX\Manager\Style\StyleManager;
 /**
  * Class WorksheetManager
  * XLSX worksheet manager, providing the interfaces to work with XLSX worksheets.
+ * 
+ * https://docs.microsoft.com/en-us/office/open-xml/structure-of-a-spreadsheetml-document
  */
 class WorksheetManager implements WorksheetManagerInterface
 {
@@ -110,9 +112,9 @@ EOD;
      */
     public function startSheet(Worksheet $worksheet)
     {
-	$dimension  = '<dimension ref="A1:AA5"/>';
-	$sheetViews = '<sheetViews><sheetView tabSelected="1" workbookViewId="0" showGridLines="true" showRowColHeaders="1"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/><selection pane="bottomLeft" activeCell="A2" sqref="A2"/></sheetView></sheetViews>';
-
+    	$dimension  = '<dimension ref="A1:AB11"/>';
+    	$sheetViews = '<sheetViews><sheetView tabSelected="1" workbookViewId="0" showGridLines="true" showRowColHeaders="1"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
+    
         $sheetFilePointer = fopen($worksheet->getFilePath(), 'w');
         $this->throwIfSheetFilePointerIsNotAvailable($sheetFilePointer);
 
@@ -277,6 +279,7 @@ EOD;
         $columnIndex   = CellHelper::getCellIndexFromColumnIndex($maxNumColumns);
         $lastRowIndex  = $worksheet->getLastWrittenRowIndex();
 	    $autofilter    = "<autoFilter ref=\"\$A\$1:\${$columnIndex}\${$lastRowIndex}\"/>";
+        $pageMargins   = '<pageMargins left="0.7" right="0.7" top="0.78740157499999996" bottom="0.78740157499999996" header="0.3" footer="0.3"/>';
         
         $worksheetFilePointer = $worksheet->getFilePointer();
 
@@ -287,7 +290,7 @@ EOD;
         fwrite($worksheetFilePointer, '</sheetData>');
 	    if($this->withAutoFilterOnFirstLine)
 	        fwrite($worksheetFilePointer, $autofilter);
-        fwrite($worksheetFilePointer, '</worksheet>');
+        fwrite($worksheetFilePointer, $pageMargins . '</worksheet>');
         fclose($worksheetFilePointer);
     }
 
