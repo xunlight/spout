@@ -298,11 +298,14 @@ EOD;
      */
     public function createWorkbookFile($worksheets)
     {
+        //bookViews tag is here for fixing priniting of frozen pane/line needed by sheetView in Worksheetmanager
         $workbookXmlFileContents = <<<'EOD'
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+    <bookViews><workbookView xWindow="-108" yWindow="-108" windowWidth="23256" windowHeight="12576"/></bookViews>
     <sheets>
 EOD;
+        
 
         /** @var Worksheet $worksheet */
         foreach ($worksheets as $worksheet) {
