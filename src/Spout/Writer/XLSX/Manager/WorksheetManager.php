@@ -112,9 +112,12 @@ EOD;
      */
     public function startSheet(Worksheet $worksheet)
     {
-    	$dimension  = '<dimension ref="A1:AB11"/>';
-    	$sheetViews = '<sheetViews><sheetView tabSelected="1" workbookViewId="0" showGridLines="true" showRowColHeaders="1"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
-    
+    	$dimension     = '<dimension ref="A1:AB11"/>';
+    	//lock for first line
+    	$sheetViews    = '<sheetViews><sheetView tabSelected="1" workbookViewId="0" showGridLines="true" showRowColHeaders="1"><pane ySplit="1" topLeftCell="A2" activePane="bottomLeft" state="frozen"/></sheetView></sheetViews>';
+    	//same height for all lines
+        $sheetFormatPr = '<sheetFormatPr defaultRowHeight="16.8" customHeight="1"/>';
+        
         $sheetFilePointer = fopen($worksheet->getFilePath(), 'w');
         $this->throwIfSheetFilePointerIsNotAvailable($sheetFilePointer);
 
@@ -124,7 +127,7 @@ EOD;
         fwrite($sheetFilePointer, self::SHEET_XML_FILE_HEADER);
 	    if($this->withAutoFilterOnFirstLine)
 		    fwrite($sheetFilePointer, $dimension . $sheetViews);
-        fwrite($sheetFilePointer, '<sheetData>');
+        fwrite($sheetFilePointer, $sheetFormatPr . '<sheetData>');
     }
 
 
